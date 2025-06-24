@@ -1,11 +1,12 @@
-function for_recoverySummary(trueParams, estParams, behavLabels, gridSize)
+function for_recoverySummary(trueParams, estParams, selVariables, titleName, gridSize)
 % FOR_RECOVERYSUMMARY This function creates a simple plot showing
 % parameter values
 %
 %   Input
 %       trueParams: True parameter values
 %       estParams: Estimated parameter values
-%       behavLabels: Labels for plot
+%       selVariables: Selected variables
+%       titleName: Title variable names
 %       gridSize: Plot grid
 %
 %   Output
@@ -22,13 +23,13 @@ for i = 1:size(estParams.parameters, 2)
     hold on
 
     % Extract parameter values
-    trueParamValue = trueParams.(behavLabels{i});
-    estParamValue = estParams.parameters.(behavLabels{i});
+    trueParamValue = trueParams.(selVariables{i});
+    estParamValue = estParams.parameters.(selVariables{i});
 
     % Plot parameters
     plot(trueParamValue, estParamValue, 'o')
     r = corr(trueParamValue, estParamValue, 'type','Spearman');
-    title([behavLabels{i} ': r=' num2str(round(r, 2))])
+    title([titleName{i} ': r=' num2str(round(r, 2))])
 
     % Add axis labels
     xlabel('True parameter')

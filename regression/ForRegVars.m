@@ -15,7 +15,8 @@ classdef ForRegVars
         beta_7 = 'beta_7';
         omikron_0 = 'omikron_0';
         omikron_1 = 'omikron_1';
-        uniform = 'uniform';
+        overshoot_lr = 'overshoot_lr';
+        overshoot_prob = 'overshoot_prob';
 
         % Start point of the parameters
         beta_0_x0 = 0; % intercept
@@ -28,7 +29,8 @@ classdef ForRegVars
         beta_7_x0 = 0; % visible*EE
         omikron_0_x0 = 10; % motor noise
         omikron_1_x0 = 0.1; % learning-rate noise
-        uniform_x0 = 0.05; % uniform component
+        overshoot_lr_x0 = 1.5; % overshoot learning rate
+        overshoot_prob_x0 = 0.1 % overshoot component
 
         % Range of starting points
         beta_0_x0_range = [0, 1];
@@ -41,7 +43,8 @@ classdef ForRegVars
         beta_7_x0_range = [0, 1];
         omikron_0_x0_range = [1, 10];
         omikron_1_x0_range = [0, 0.5];
-        uniform_x0_range = [0, 1];
+        overshoot_lr_x0_range = [1, 2];
+        overshoot_prob_x0_range = [0, 0.5];
 
         % When prior is used: pior mean
         prior_mean
@@ -55,7 +58,8 @@ classdef ForRegVars
         beta_7_prior_mean = 0;
         omikron_0_prior_mean = 5;
         omikron_1_prior_mean = 0.1;
-        uniform_prior_mean = 0.05
+        overshoot_lr_prior_mean = 1.5
+        overshoot_prob_prior_mean = 0.1
 
         % When prior is used: pior width
         % Note these can be tuned for future versions
@@ -70,7 +74,8 @@ classdef ForRegVars
         beta_7_prior_width = 5;
         omikron_0_prior_width = 10;
         omikron_1_prior_width = 0.1;
-        uniform_prior_width = 5;
+        overshoot_lr_prior_width = 5;
+        overshoot_prob_prior_width = 5;
 
         % Parameters that should be estimated
         which_vars = struct()
@@ -106,7 +111,8 @@ classdef ForRegVars
             obj.which_vars.beta_7 = true; % interaction EE and visible
             obj.which_vars.omikron_0 = true; % motor noise (independent of PE)
             obj.which_vars.omikron_1 = true; % learning-rate noise (dependent on PE)
-            obj.which_vars.uniform = false; % uniform component for outlier predictions
+            obj.which_vars.overshoot_lr = false; % overshoot learning rate
+            obj.which_vars.overshoot_prob = false; % overshoot component
             obj.regressionComponents = [obj.which_vars.beta_0, obj.which_vars.beta_1,...
                 obj.which_vars.beta_2, obj.which_vars.beta_3, obj.which_vars.beta_4,...
                 obj.which_vars.beta_5, obj.which_vars.beta_6, obj.which_vars.beta_7];
@@ -122,7 +128,8 @@ classdef ForRegVars
             obj.lowerBoundaries.beta_7_lb = -3.5;
             obj.lowerBoundaries.omikron_0_lb = 3;  % In Matlab, below 3 seems to be problematic
             obj.lowerBoundaries.omikron_1_x0_lb = 0.0;
-            obj.lowerBoundaries.uniform_x0_lb = 0.0;
+            obj.lowerBoundaries.overshoot_lr_x0_lb = 1.0;
+            obj.lowerBoundaries.overshoot_prob_x0_lb = 0.0;
 
             % Estimation upper boundaries
             obj.upperBoundaries.beta_0_up = 3.5;
@@ -135,7 +142,8 @@ classdef ForRegVars
             obj.upperBoundaries.beta_7_up = 3.5;
             obj.upperBoundaries.omikron_0_ub = 20;
             obj.upperBoundaries.omikron_1_x0_ub = 0.5;
-            obj.upperBoundaries.uniform_x0_ub = 0.5;
+            obj.upperBoundaries.overshoot_lr_x0_ub = 2.0;
+            obj.upperBoundaries.overshoot_prob_x0_up = 0.5;
 
             % All prior means
             obj.prior_mean = [obj.beta_0_prior_mean, obj.beta_1_prior_mean,...

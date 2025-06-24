@@ -6,7 +6,7 @@
 % 4. Compare actual and predicted update distributions
 
 % Number of random starting points for regression estimation
-n_sp = 50;
+n_sp = 15;
 rand_sp = true;
 
 % Identify parent directory of this config script
@@ -73,7 +73,8 @@ reg_vars.which_vars.beta_6 = true; % interaction PE and visible
 reg_vars.which_vars.beta_7 = false; % interaction EE and visible
 reg_vars.which_vars.omikron_0 = true; % motor noise (independent of PE)
 reg_vars.which_vars.omikron_1 = true; % learning-rate noise (dependent on PE)
-reg_vars.which_vars.uniform = false; % uniform component for outlier predictions
+reg_vars.which_vars.overshoot_lr = true; % parameter modeling systematic trials with LR > 1 
+reg_vars.which_vars.overshoot_prob = true; % overshoot component
 reg_vars.regressionComponents = [reg_vars.which_vars.beta_0, reg_vars.which_vars.beta_1,...
     reg_vars.which_vars.beta_2, reg_vars.which_vars.beta_3, reg_vars.which_vars.beta_4,...
     reg_vars.which_vars.beta_5, reg_vars.which_vars.beta_6, reg_vars.which_vars.beta_7];
@@ -89,10 +90,11 @@ writetable(parameters, 'parameters.csv');
 
 % Simple plots of key coefficients
 behavLabels = {'Int', 'PE', 'PE*RU', 'PE*CPP', 'PE*Hit', 'PE*Noise',...
-    'PE*Visible', 'EE*Visble', 'Motor noise', 'LR noise', 'uniform'};
+    'PE*Visible', 'EE*Visble', 'Motor noise', 'LR noise', 'overshoot_lr',... 
+    'overshot_prob'};
 which_vars_vec = struct2array(reg_vars.which_vars);
 behavLabels = behavLabels(which_vars_vec);
-gridSize = [3,3];
+gridSize = [3,4];
 for_parameterSummary(results.parameters, behavLabels, gridSize)
 
 % ----------------------------------------------------
@@ -140,6 +142,15 @@ if reg_vars.which_vars.omikron_1
     df_params.omikron_1 = results.parameters.omikron_1;
 end
 
+if reg_vars.which_vars.overshoot_lr
+   df_params.overshoot_lr = results.parameters.overshoot_lr;
+end
+
+if reg_vars.which_vars.overshoot_prob
+   df_params.overshoot_prob = results.parameters.overshoot_prob;
+end
+
+% Number of subjects
 df_params.subj_num = (1:n_subj)';
 
 % Sample updates from regression model

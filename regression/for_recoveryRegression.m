@@ -32,11 +32,13 @@ reg_vars.which_vars.beta_2 = true; % interaction PE and RU
 reg_vars.which_vars.beta_3 = true; % interaction PE and CPP
 reg_vars.which_vars.beta_4 = true; % interaction PE and hit
 reg_vars.which_vars.beta_5 = true; % interaction PE and noise condition
-reg_vars.which_vars.beta_6 = false; % interaction PE and visible
+reg_vars.which_vars.beta_6 = true; % interaction PE and visible
 reg_vars.which_vars.beta_7 = false; % interaction EE and visible
 reg_vars.which_vars.omikron_0 = true; % motor noise (independent of UP)
 reg_vars.which_vars.omikron_1 = true; % learning-rate noise (dependent on UP)
-reg_vars.which_vars.uniform = false; % uniform component for outlier predictions
+reg_vars.which_vars.overshoot_lr = true; % overshoot learning rate
+reg_vars.which_vars.overshoot_prob = true; % overshoot component
+
 reg_vars.regressionComponents = [reg_vars.which_vars.beta_0, reg_vars.which_vars.beta_1,...
     reg_vars.which_vars.beta_2, reg_vars.which_vars.beta_3, reg_vars.which_vars.beta_4,...
     reg_vars.which_vars.beta_5, reg_vars.which_vars.beta_6, reg_vars.which_vars.beta_7];
@@ -85,6 +87,14 @@ if reg_vars.which_vars.omikron_1
     df_params.omikron_1 = rand(n_subj, 1) * 0.3;
 end
 
+if reg_vars.which_vars.overshoot_lr
+   df_params.overshoot_lr = unifrnd(1, 1.5, n_subj,1);
+end
+
+if reg_vars.which_vars.overshoot_prob
+   df_params.overshoot_prob = rand(n_subj, 1) * 0.5;
+end
+
 df_params.subj_num = (1:n_subj)';
 
 % Simulate updates based on sampled parameters
@@ -105,12 +115,18 @@ results = regression.run_estimation(samplesStruct);
 % 3. Plot correlations
 % --------------------
 
-behavLabels = {reg_vars.beta_0, reg_vars.beta_1, reg_vars.beta_2,...
+selVariables = {reg_vars.beta_0, reg_vars.beta_1, reg_vars.beta_2,...
     reg_vars.beta_3, reg_vars.beta_4, reg_vars.beta_5,...
     reg_vars.beta_6, reg_vars.beta_7, reg_vars.omikron_0,...
-    reg_vars.omikron_1};
+    reg_vars.omikron_1, reg_vars.overshoot_lr, reg_vars.overshoot_prob};
+
+titleName = {'Int', 'Fixed LR', 'RU',...
+    'CPP', 'Hit', 'Noise',...
+    'PE-Visible', 'EE-Visible', 'Omikron 0',...
+    'Omikron 1', 'OS LR', 'OS Prob'};
 
 whichParamsVec = struct2array(reg_vars.which_vars);
-behavLabels = behavLabels(whichParamsVec);
-gridSize = [3,3];
-for_recoverySummary(df_params, results, behavLabels, gridSize)
+selVariables = selVariables(whichParamsVec);
+titleName = titleName(whichParamsVec);
+gridSize = [3,4];
+for_recoverySummary(df_params, results, selVariables, titleName, gridSize)

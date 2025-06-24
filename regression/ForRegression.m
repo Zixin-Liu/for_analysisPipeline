@@ -15,7 +15,8 @@ classdef ForRegression
         beta_7 % visible*EE
         omikron_0 % motor noise
         omikron_1 % learning-rate noise
-        uniform % uniform component
+        overshoot_lr % overshoot learning rate
+        overshoot_prob % overshoot component
 
         % Start point of the parameters
         beta_0_x0
@@ -28,7 +29,8 @@ classdef ForRegression
         beta_7_x0
         omikron_0_x0
         omikron_1_x0
-        uniform_x0
+        overshoot_lr_x0
+        overshoot_prob_x0
 
         % Range of random starting points
         beta_0_x0_range
@@ -41,7 +43,8 @@ classdef ForRegression
         beta_7_x0_range
         omikron_0_x0_range
         omikron_1_x0_range
-        uniform_x0_range
+        overshoot_lr_x0_range
+        overshoot_prob_x0_range
 
         % When prior is used: pior mean
         beta_0_prior_mean
@@ -54,7 +57,8 @@ classdef ForRegression
         beta_7_prior_mean
         omikron_0_prior_mean
         omikron_1_prior_mean
-        uniform_prior_mean
+        overshoot_lr_prior_mean
+        overshoot_prob_prior_mean
         prior_mean
 
         % When prior is used: pior width
@@ -68,7 +72,8 @@ classdef ForRegression
         beta_7_prior_width
         omikron_0_prior_width
         omikron_1_prior_width
-        uniform_prior_width
+        overshoot_lr_prior_width
+        overshoot_prob_prior_width
         prior_width
 
         % Parameters to be estimated
@@ -105,7 +110,8 @@ classdef ForRegression
             obj.beta_7 = reg_vars.beta_7;
             obj.omikron_0 = reg_vars.omikron_0;
             obj.omikron_1 = reg_vars.omikron_1;
-            obj.uniform = reg_vars.uniform;
+            obj.overshoot_lr = reg_vars.overshoot_lr;
+            obj.overshoot_prob = reg_vars.overshoot_prob;
 
             % Start point of the parameters
             obj.beta_0_x0 = reg_vars.beta_0_x0;
@@ -118,7 +124,8 @@ classdef ForRegression
             obj.beta_7_x0 = reg_vars.beta_7_x0;
             obj.omikron_0_x0 = reg_vars.omikron_0_x0;
             obj.omikron_1_x0 = reg_vars.omikron_1_x0;
-            obj.uniform_x0 = reg_vars.uniform_x0;
+            obj.overshoot_lr_x0 = reg_vars.overshoot_lr_x0;
+            obj.overshoot_prob_x0 = reg_vars.overshoot_prob_x0;
 
             % Range of random starting points
             obj.beta_0_x0_range = reg_vars.beta_0_x0_range;
@@ -131,7 +138,8 @@ classdef ForRegression
             obj.beta_7_x0_range = reg_vars.beta_7_x0_range;
             obj.omikron_0_x0_range = reg_vars.omikron_0_x0_range;
             obj.omikron_1_x0_range = reg_vars.omikron_1_x0_range;
-            obj.uniform_x0_range = reg_vars.uniform_x0_range;
+            obj.overshoot_lr_x0_range = reg_vars.overshoot_lr_x0_range;
+            obj.overshoot_prob_x0_range = reg_vars.overshoot_prob_x0_range;
 
             % When prior is used: pior mean
             obj.beta_0_prior_mean = reg_vars.beta_0_prior_mean;
@@ -144,7 +152,8 @@ classdef ForRegression
             obj.beta_7_prior_mean = reg_vars.beta_7_prior_mean;
             obj.omikron_0_prior_mean = reg_vars.omikron_0_prior_mean;
             obj.omikron_1_prior_mean = reg_vars.omikron_1_prior_mean;
-            obj.uniform_prior_mean = reg_vars.uniform_prior_mean;
+            obj.overshoot_lr_prior_mean = reg_vars.overshoot_lr_prior_mean;
+            obj.overshoot_prob_prior_mean = reg_vars.overshoot_prob_prior_mean;
             obj.prior_mean = reg_vars.prior_mean;
 
             % When prior is used: pior width
@@ -158,7 +167,8 @@ classdef ForRegression
             obj.beta_7_prior_width = reg_vars.beta_7_prior_width;
             obj.omikron_0_prior_width = reg_vars.omikron_0_prior_width;
             obj.omikron_1_prior_width = reg_vars.omikron_1_prior_width;
-            obj.uniform_prior_width = reg_vars.uniform_prior_width;
+            obj.overshoot_lr_prior_width = reg_vars.overshoot_lr_prior_width;
+            obj.overshoot_prob_prior_width = reg_vars.overshoot_prob_prior_width;
             obj.prior_width = reg_vars.prior_width;
 
             % Parameters to be estimated
@@ -190,7 +200,7 @@ classdef ForRegression
             %   Ouptut
             %       results: Structure with coefficients, error terms, and
             %       negative log-likelihood
-            
+
             % Throw error if omikron_0 not free
             if obj.which_vars.omikron_0 == false
                 error("Regression model needs omikron_0 parameter. Please add it back in")
@@ -240,7 +250,7 @@ classdef ForRegression
             % Define column names
             columnNames = {obj.beta_0, obj.beta_1, obj.beta_2,...
                 obj.beta_3, obj.beta_4, obj.beta_5, obj.beta_6,...
-                obj.beta_7, obj.omikron_0, obj.omikron_1, obj.uniform};
+                obj.beta_7, obj.omikron_0, obj.omikron_1, obj.overshoot_lr, obj.overshoot_prob};
             columnNames = columnNames(which_vars_vec);
 
             % Convert matrix to table and assign column names
@@ -305,7 +315,7 @@ classdef ForRegression
                     startPoint = [obj.beta_0_x0, obj.beta_1_x0, obj.beta_2_x0,...
                         obj.beta_3_x0, obj.beta_4_x0, obj.beta_5_x0, obj.beta_6_x0,...
                         obj.beta_7_x0, obj.omikron_0_x0, obj.omikron_1_x0,...
-                        obj.uniform_x0];
+                        obj.overshoot_lr_x0, obj.overshoot_prob_x0];
                 end
 
                 % Define objective function with data as an extra parameter
@@ -364,21 +374,43 @@ classdef ForRegression
                 allVM_likelihoods(i) = circ_vmpdf(data.Y(i), yHat(i), concentration(i));
             end
 
-            % Add uniform mixture component:
-            % Accounts for trials where subjects predict randomly so
-            % points that violate the gaussian don't break the model
-            if obj.which_vars.uniform == 1
-                % If there is a uniform mixture, adjust the likelihoods
-                % accordingly
-                allVM_likelihoods = allVM_likelihoods.*(1-params(end))+ (1./(2.*pi)).*(params(end));
+            % Add overshoot mixture component:
+            if obj.which_vars.overshoot_lr == 1 || obj.which_vars.overshoot_prob == 1
+
+                % If there is an overshoot mixture, adjust the likelihoods
+                % accordingly. Previously, we had a uniform mixutre; now we
+                % try to capture systematic LRs > 1 based on this mixture
+                % component.
+                % allVM_likelihoods = allVM_likelihoods.*(1-params(end))+ (1./(2.*pi)).*(params(end));
+
+                % 1) Predicted update according to this component
+                yHatOvershoot = data.X(:,2) .* params(end-1);
+
+                % 2) Likelihood of overshoot
+                % Residuals
+                if obj.which_vars.omikron_1
+                    abs_dist_overshoot = abs(yHatOvershoot);
+                    concentration = residual_fun(abs_dist_overshoot, motor_noise, lr_noise);
+                end
+
+                % Compute the likelihood
+                overshoot_lik = nan(length(data.Y),1);
+                for i = 1:length(data.Y)
+                    overshoot_lik(i) = circ_vmpdf(data.Y(i), yHatOvershoot(i), concentration(i));
+                end
+
+                % 3) Mixture likelihood
+                allVM_likelihoods = allVM_likelihoods .* (1-params(end)) + overshoot_lik .* (params(end));
             end
+
+            allVM_likelihoods = max(allVM_likelihoods, 1e-10);
 
             % Negative log-likelihood
             negLogLike = -1.*sum(log(allVM_likelihoods));
 
             % Favour estimates closer to prior mean
             % Currently implemented for key parameters; consider adding
-            % priors for error terms and uniform component
+            % priors for error terms and overshoot component
             if obj.usePrior == 1
                 priorProb = sum(log(normpdf(coeffs, coeffs_prior_mean, coeffs_prior_width)));
                 if priorProb < 1e-300
@@ -412,8 +444,9 @@ classdef ForRegression
                 unifrnd(obj.beta_6_x0_range(1), obj.beta_6_x0_range(2)),...
                 unifrnd(obj.beta_7_x0_range(1), obj.beta_7_x0_range(2)),...
                 unifrnd(obj.omikron_0_x0_range(1), obj.omikron_0_x0_range(2)),...
-                unifrnd(obj.omikron_1_x0_range(1), obj.omikron_1_x0_range(2))...
-                unifrnd(obj.uniform_x0_range(1), obj.uniform_x0_range(2))];
+                unifrnd(obj.omikron_1_x0_range(1), obj.omikron_1_x0_range(2)),...
+                unifrnd(obj.overshoot_lr_x0_range(1), obj.overshoot_lr_x0_range(2)),...
+                unifrnd(obj.overshoot_prob_x0_range(1), obj.overshoot_prob_x0_range(2))];
         end
 
         function datamat = get_datamat(obj, subBehavData)
@@ -551,13 +584,13 @@ classdef ForRegression
                 coeffs = sel_coeffs(1:sum(obj.regressionComponents));
 
                 % Predicted updates
-                yHat = datamat * coeffs';
+                yHatRegression = datamat * coeffs';
 
                 % Residuals
                 if obj.which_vars.omikron_1
 
                     % Compute updating noise based on common function
-                    abs_dist = abs(yHat);
+                    abs_dist = abs(yHatRegression);
                     motor_noise = sel_coeffs(sum(obj.regressionComponents)+1);
                     lr_noise = sel_coeffs(sum(obj.regressionComponents)+2);
                     concentration = residual_fun(abs_dist, motor_noise, lr_noise);
@@ -569,10 +602,40 @@ classdef ForRegression
 
                 % Sample updates from Gaussian using standard deviation
                 % yHat = normrnd(yHat, sqrt(1./concentration));
-                for j = 1:length(yHat)
-                    yHat(j) = circ_vmrnd(yHat(j), concentration(j), 1);
+                for j = 1:length(yHatRegression)
+                    yHatRegression(j) = circ_vmrnd(yHatRegression(j), concentration(j), 1);
                 end
-                % todo: van mises!
+
+                % Add overshoot mixture component:
+                if obj.which_vars.overshoot_lr == 1 || obj.which_vars.overshoot_prob == 1
+
+                    % Predicted update according to this component
+                    yHatOvershoot = datamat(:,2) .* sel_coeffs(end-1);
+
+                    % Residuals
+                    if obj.which_vars.omikron_1
+                        abs_dist_overshoot = abs(yHatOvershoot);
+                        concentration = residual_fun(abs_dist_overshoot, motor_noise, lr_noise);
+                    end
+
+                    % Generate updates
+                    yHat = nan(length(yHatOvershoot),1);
+                    for j = 1:length(yHatOvershoot)
+
+                        % Sample overshoot update
+                        yHatOvershoot(j) = circ_vmrnd(yHatOvershoot(j), concentration(j), 1);
+
+                        % Decide which update is active on this trial
+                        sampleOvershoot = rand();
+                        if sampleOvershoot <= sel_coeffs(end)
+                            yHat(j) = yHatOvershoot(j);
+                        else
+                            yHat(j) = yHatRegression(j);
+                        end
+                    end
+                else
+                    yHat = yHatRegression;
+                end
 
                 % Store update and ID
                 df_data.a_t = yHat;
