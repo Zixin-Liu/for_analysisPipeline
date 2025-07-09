@@ -88,11 +88,11 @@ if reg_vars.which_vars.omikron_1
 end
 
 if reg_vars.which_vars.overshoot_lr
-   df_params.overshoot_lr = unifrnd(1, 1.5, n_subj,1);
+   df_params.overshoot_lr = unifrnd(1, 3.5, n_subj,1);
 end
 
 if reg_vars.which_vars.overshoot_prob
-   df_params.overshoot_prob = rand(n_subj, 1) * 0.5;
+   df_params.overshoot_prob = rand(n_subj, 1);
 end
 
 df_params.subj_num = (1:n_subj)';

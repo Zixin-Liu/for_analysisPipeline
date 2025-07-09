@@ -6,7 +6,7 @@
 % 4. Compare actual and predicted update distributions
 
 % Number of random starting points for regression estimation
-n_sp = 15;
+n_sp = 50;
 rand_sp = true;
 
 % Identify parent directory of this config script

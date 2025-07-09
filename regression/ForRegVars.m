@@ -133,7 +133,7 @@ classdef ForRegVars
 
             % Estimation upper boundaries
             obj.upperBoundaries.beta_0_up = 3.5;
-            obj.upperBoundaries.beta_1_up = 3.5;
+            obj.upperBoundaries.beta_1_up = 1;
             obj.upperBoundaries.beta_2_up = 3.5;
             obj.upperBoundaries.beta_3_up = 3.5;
             obj.upperBoundaries.beta_4_up = 3.5;
@@ -142,8 +142,8 @@ classdef ForRegVars
             obj.upperBoundaries.beta_7_up = 3.5;
             obj.upperBoundaries.omikron_0_ub = 20;
             obj.upperBoundaries.omikron_1_x0_ub = 0.5;
-            obj.upperBoundaries.overshoot_lr_x0_ub = 2.0;
-            obj.upperBoundaries.overshoot_prob_x0_up = 0.5;
+            obj.upperBoundaries.overshoot_lr_x0_ub = 3.5;
+            obj.upperBoundaries.overshoot_prob_x0_up = 1;
 
             % All prior means
             obj.prior_mean = [obj.beta_0_prior_mean, obj.beta_1_prior_mean,...
