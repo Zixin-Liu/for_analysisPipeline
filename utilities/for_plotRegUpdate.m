@@ -24,8 +24,8 @@ figure()
 hold on
 
 % Plot histograms
-histogram(realUp, "facecolor", "k", "facealpha", 0.8, 'BinWidth', 0.25, 'Normalization', 'pdf')
-histogram(predUp, "facecolor", "b", "facealpha", 0.5, 'BinWidth', 0.25, 'Normalization', 'pdf')
+histogram(realUp, "facecolor", "k", "facealpha", 0.8, 'BinWidth', 0.05, 'Normalization', 'pdf')
+histogram(predUp, "facecolor", "b", "facealpha", 0.5, 'BinWidth', 0.05, 'Normalization', 'pdf')
 
 % Estimate and plot distributions
 [f, xi] = ksdensity(realUp); % Kernel Density Estimation

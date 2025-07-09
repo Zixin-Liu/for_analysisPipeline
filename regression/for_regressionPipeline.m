@@ -10,7 +10,7 @@ n_sp = 50;
 rand_sp = true;
 
 % Identify parent directory of this config script
-parentDirectory = fileparts(fileparts(mfilename('fullpath')));
+parentDirectory = 'C:\Users\bbf2518\Documents\GitHub\for_analysisPipeline_og';
 cd(parentDirectory)
 addpath(genpath(parentDirectory));
 
@@ -164,8 +164,8 @@ samplesStruct = table2struct(samples, 'ToScalar', true);
 % ------------------------------------
 
 % Example subject
-ID = 1;
-for_plotRegUpdate(allSubBehavData, samples, ID)
+% ID = 1;
+% for_plotRegUpdate(allSubBehavData, samples, ID)
 
 % All subjects
 for_plotRegUpdate(allSubBehavData, samples)
