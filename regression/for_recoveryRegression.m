@@ -5,7 +5,7 @@
 % 3. Plot correlations
 
 % Number of random starting points for regression estimation
-n_sp = 15;
+n_sp = 50;
 
 % Number of simulations for recovery
 n_subj = 100;
@@ -47,69 +47,69 @@ reg_vars.regressionComponents = [reg_vars.which_vars.beta_0, reg_vars.which_vars
 regression = ForRegression(reg_vars);
 
 % Sample random model parameters that we try to recover
-df_params = table();
+df_params_recovery_regression = table();
 
 if reg_vars.which_vars.beta_0
-    df_params.beta_0 = unifrnd(-0.1,0.1, n_subj, 1);
+    df_params_recovery_regression.beta_0 = unifrnd(-0.1,0.1, n_subj, 1);
 end
 
 if reg_vars.which_vars.beta_1
-    df_params.beta_1 = rand(n_subj, 1);
+    df_params_recovery_regression.beta_1 = rand(n_subj, 1);
 end
 
 if reg_vars.which_vars.beta_2
-    df_params.beta_2 = rand(n_subj,1);
+    df_params_recovery_regression.beta_2 = rand(n_subj,1);
 end
 
 if reg_vars.which_vars.beta_3
-    df_params.beta_3 = rand(n_subj,1);
+    df_params_recovery_regression.beta_3 = rand(n_subj,1);
 end
 
 if reg_vars.which_vars.beta_4
-    df_params.beta_4 = rand(n_subj,1);
+    df_params_recovery_regression.beta_4 = rand(n_subj,1);
 end
 
 if reg_vars.which_vars.beta_5
-    df_params.beta_5 = unifrnd(-0.1,0.1, n_subj, 1);
+    df_params_recovery_regression.beta_5 = unifrnd(-0.1,0.1, n_subj, 1);
 end
 
 if reg_vars.which_vars.beta_6
-    df_params.beta_6 = unifrnd(-0.1,0.1, n_subj, 1);
+    df_params_recovery_regression.beta_6 = unifrnd(-0.1,0.1, n_subj, 1);
 end
 
 if reg_vars.which_vars.beta_7
-    df_params.beta_7 = unifrnd(-0.1,0.1, n_subj, 1);
+    df_params_recovery_regression.beta_7 = unifrnd(-0.1,0.1, n_subj, 1);
 end
 
-df_params.omikron_0 = unifrnd(3, 10, n_subj,1);
+df_params_recovery_regression.omikron_0 = unifrnd(3, 10, n_subj,1);
 
 if reg_vars.which_vars.omikron_1
-    df_params.omikron_1 = rand(n_subj, 1) * 0.3;
+    df_params_recovery_regression.omikron_1 = rand(n_subj, 1) * 0.3;
 end
 
 if reg_vars.which_vars.overshoot_lr
-   df_params.overshoot_lr = unifrnd(1, 3.5, n_subj,1);
+   df_params_recovery_regression.overshoot_lr = unifrnd(1, 3.5, n_subj,1);
 end
 
 if reg_vars.which_vars.overshoot_prob
-   df_params.overshoot_prob = rand(n_subj, 1);
+   df_params_recovery_regression.overshoot_prob = rand(n_subj, 1);
 end
 
-df_params.subj_num = (1:n_subj)';
+df_params_recovery_regression.subj_num = (1:n_subj)';
 
 % Simulate updates based on sampled parameters
-n_trials = 400;
-samples = regression.sample_data(df_params, n_trials);
+n_trials = 240;
+samples_sim = regression.sample_data(df_params_recovery_regression, n_trials);
 
 % ----------------------------
 % 2. Estimate regression model
 % ----------------------------
 
 % Translate table to structure
-samplesStruct = table2struct(samples, 'ToScalar', true);
+samplesStruct = table2struct(samples_sim, 'ToScalar', true);
 
 % Estimate regression model
-results = regression.run_estimation(samplesStruct);
+results_recovery_regression = regression.run_estimation(samplesStruct);
 
 % --------------------
 % 3. Plot correlations
@@ -129,4 +129,18 @@ whichParamsVec = struct2array(reg_vars.which_vars);
 selVariables = selVariables(whichParamsVec);
 titleName = titleName(whichParamsVec);
 gridSize = [3,4];
-for_recoverySummary(df_params, results, selVariables, titleName, gridSize)
+for_recoverySummary(df_params_recovery_regression, results_recovery_regression, selVariables, titleName, gridSize);
+
+
+% 4. Now we start validation
+
+% First we calculate the distance between the samples and the actual data
+realUP = allSubBehavData.a_t(~isnan(allSubBehavData.a_t));
+predUP = samples_sim.a_t(~isnan(samples_sim.a_t));
+
+realEE = allSubBehavData.e_t(~isnan(allSubBehavData.e_t));
+predEE = samples_sim.e_t(~isnan(samples_sim.e_t));
+
+plotE_T(allSubBehavData,samples_sim)
+
+

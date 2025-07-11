@@ -6,7 +6,7 @@
 % 4. Plot correlations
 
 % Number of random starting points for model estimation
-n_sp = 10;
+n_sp = 50;
 rand_sp = true;
 
 % Identify parent directory of this config script
@@ -99,7 +99,7 @@ df_model.subj_num = (1:n_subj)';
 % Run RBM for simulations
 sim = true;
 plot_data = false; % no plotting for now
-[~, df_data, true_params] = for_simulation(allSubBehavData, df_model, n_subj, plot_data, sim);
+[~, df_data, true_params_RBM] = for_simulation(allSubBehavData, df_model, n_subj, plot_data, sim);
 
 % ---------------
 % 3. Estimate RBM
@@ -113,7 +113,7 @@ dataStructSingle = table2struct(df_data, 'ToScalar', true);
 dataStructSingle.mu_t = allSubBehavData.mu_t;
 
 % Estimate model
-recoveryResults = estimation.run_estimation(dataStructSingle, agent_vars);
+results_recovery_RBM = estimation.run_estimation(dataStructSingle, agent_vars);
 
 % --------------------
 % 4. Plot correlations
@@ -123,4 +123,4 @@ behavLabels = {est_vars.omikron_0, est_vars.omikron_1, est_vars.h, est_vars.s, e
 whichParamsVec = struct2array(est_vars.which_vars);
 behavLabels = behavLabels(whichParamsVec);
 gridSize = [2,3];
-for_recoverySummary(true_params, recoveryResults, behavLabels, gridSize)
+for_recoverySummary(true_params_RBM, results_recovery_RBM, behavLabels, behavLabels, gridSize)

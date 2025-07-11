@@ -119,7 +119,7 @@ classdef ForRegVars
 
             % Estimation lower boundaries
             obj.lowerBoundaries.beta_0_lb = -3.5;
-            obj.lowerBoundaries.beta_1_lb = -3.5;
+            obj.lowerBoundaries.beta_1_lb = 0; % -3.5
             obj.lowerBoundaries.beta_2_lb = -3.5;
             obj.lowerBoundaries.beta_3_lb = -3.5;
             obj.lowerBoundaries.beta_4_lb = -3.5;

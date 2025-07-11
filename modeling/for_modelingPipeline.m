@@ -57,7 +57,7 @@ agent_vars.max_x = 2 * pi;
 estimation = ForEstimation(est_vars);
 
 % Estimate RBM
-results = estimation.run_estimation(allSubBehavData, agent_vars);
+results_RBM = estimation.run_estimation(allSubBehavData, agent_vars);
 
 % ----------------------------
 % 3. Plot estimated parameters
@@ -67,4 +67,4 @@ behavLabels = {est_vars.omikron_0, est_vars.omikron_1, est_vars.h, est_vars.s, e
 whichParamsVec = struct2array(est_vars.which_vars);
 behavLabels = behavLabels(whichParamsVec);
 gridSize = [3,2];
-for_parameterSummary(results.parameters, behavLabels, gridSize)
+for_parameterSummary(results_RBM.parameters, behavLabels, gridSize)

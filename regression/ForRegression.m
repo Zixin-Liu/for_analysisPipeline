@@ -475,7 +475,7 @@ classdef ForRegression
             % Note: This is just one option and we could implement other
             % combinations. This one ensures that the LR is not > 1
             if obj.which_vars.beta_2 == true
-                datamat = [datamat, (subBehavData.tau_t .* (1-subBehavData.omega_t)) .* subBehavData.delta_t];
+                datamat = [datamat, subBehavData.tau_t .* subBehavData.delta_t];
             end
 
             if obj.which_vars.beta_3 == true

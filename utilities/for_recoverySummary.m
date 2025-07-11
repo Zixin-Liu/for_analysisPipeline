@@ -28,9 +28,10 @@ for i = 1:size(estParams.parameters, 2)
 
     % Plot parameters
     plot(trueParamValue, estParamValue, 'o')
-    r = corr(trueParamValue, estParamValue, 'type','Spearman');
-    title([titleName{i} ': r=' num2str(round(r, 2))])
-
+    [r, p] = corr(trueParamValue, estParamValue, 'type', 'Spearman');
+    % title([titleName{i} ': r=' num2str(round(r, 2)) ', p=' num2str(p, '%.3f')])
+    title([titleName{i} ': r=' num2str(round(r, 2))]);
+    
     % Add axis labels
     xlabel('True parameter')
     ylabel('Estimated parameter')
